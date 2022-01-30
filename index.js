@@ -12,7 +12,7 @@ const sleep = (ms = 2000) => new Promise((r)=>setTimeout(r,ms))
 
 async function welcome(){
   const rainbowTitle = chalkAnimation.rainbow(
-    'Who is dennis want? \n'
+    'Who is dennis Wang? \n'
   )
   await sleep();
   rainbowTitle.stop()
@@ -23,7 +23,16 @@ async function welcome(){
     So get all the questions right...
   `)
 }
-await welcome()
+
+async function handleAnswer(isCorrect){
+  const spinner = createSpinner("Checking answer...").start();
+  await sleep();
+  if(isCorrect){
+    spinner.success({text:`Nice work ${playerName}. Solid answer `})
+  }
+}
+
+
 async function askName(){
   const answers = await inquirer.prompt({
     name:'player_name',
@@ -35,4 +44,65 @@ async function askName(){
   })
   playerName = answers.player_name
 }
+
+async function question1(){
+  const answers = await inquirer.prompt({
+    name:'question_1',
+    type:"list",
+    message:"When was Dennis Wang?",
+    choices:[
+      'August 12th, 2004',
+      "July 14th, 2005",
+      "September 12th,2004",
+      "August 12th, 2005"
+    ],
+
+  })
+  return handleAnswer(answers.question_1==="August 12th, 2005")
+}
+
+async function question2(){
+  const answers = await inquirer.prompt({
+    name:'question_2',
+    type:"list",
+    message:"Who is Dennis Wang?",
+    choices:[
+      'Yicheng',
+      "Wennis",
+      "DN",
+      "Dang"
+    ],
+
+  })
+  return handleAnswer(answers.question_2==="Yicheng")
+}
+async function question3(){
+  const answers = await inquirer.prompt({
+    name:'question_3',
+    type:"list",
+    message:"How was Dennis Wang?",
+    choices:[
+      'Good',
+      "Bad",
+      "Better than ever",
+      "Okay"
+    ],
+
+  })
+  return handleAnswer(answers.question_3==="Better than ever")
+}
+function winner(){
+  console.clear();
+  figlet(`Congrats, ${playerName} \n You did it!`,(err,data)=>{
+    console.log(gradient.pastel.multiline(data)+'\n');
+  
+    console.log("Goodbye");
+    process.exit(0)
+  })
+}
+await welcome()
 await askName()
+await question1()
+await question2()
+await question3()
+winner()
